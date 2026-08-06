@@ -17,8 +17,8 @@ env:
   CL_REPOSITORY_CLIENT_VERSION: "0.11.0"
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # Prefer sibling checkout until sql-query OCI carries matching registry API.
-  # Flip to main after sql-query split PR merges.
-  SQL_QUERY_REF: cursor/sql-type-ddl-3a7a
+  # Point at sql-query integration branch for vendor emit hooks (PR stacks on type-ddl).
+  SQL_QUERY_REF: cursor/sql-full-gaps-3a7a
 
 jobs:
   test:

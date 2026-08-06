@@ -16,6 +16,17 @@
     (ok (signals (compile-sql stmt :dialect (make-sqlite3-dialect))
                  'sql-dialect-unsupported))))
 
+(deftest type-ddl-sqlite-unsupported
+  (let ((d (make-sqlite3-dialect)))
+    (ok (signals (compile-sql (create-type :euros :as :numeric) :dialect d)
+                 'sql-dialect-unsupported))
+    (ok (signals (compile-sql (drop-type :euros) :dialect d)
+                 'sql-dialect-unsupported))
+    (ok (signals (compile-sql (create-domain :posint :as :integer) :dialect d)
+                 'sql-dialect-unsupported))
+    (ok (signals (compile-sql (alter-type :t (add-attribute :x :text)) :dialect d)
+                 'sql-dialect-unsupported))))
+
 (deftest execute-roundtrip-sqlite
   (sql-protocol:with-connection (c :driver :sqlite3 :database-name ":memory:")
     (execute-query c (create-table :users

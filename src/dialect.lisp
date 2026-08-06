@@ -75,6 +75,41 @@
          :dialect dialect
          :message "SQLite has no CALL"))
 
+(defmethod emit-create-type ((dialect sqlite3-dialect) stmt stream ctx)
+  (declare (ignore stmt stream ctx))
+  (error 'sql-dialect-unsupported
+         :feature :create-type
+         :dialect dialect
+         :message "SQLite has no CREATE TYPE"))
+
+(defmethod emit-sql ((dialect sqlite3-dialect) (stmt drop-type-statement) stream ctx)
+  (declare (ignore stmt stream ctx))
+  (error 'sql-dialect-unsupported
+         :feature :drop-type
+         :dialect dialect
+         :message "SQLite has no DROP TYPE"))
+
+(defmethod emit-sql ((dialect sqlite3-dialect) (stmt alter-type-statement) stream ctx)
+  (declare (ignore stmt stream ctx))
+  (error 'sql-dialect-unsupported
+         :feature :alter-type
+         :dialect dialect
+         :message "SQLite has no ALTER TYPE"))
+
+(defmethod emit-sql ((dialect sqlite3-dialect) (stmt create-domain-statement) stream ctx)
+  (declare (ignore stmt stream ctx))
+  (error 'sql-dialect-unsupported
+         :feature :create-domain
+         :dialect dialect
+         :message "SQLite has no CREATE DOMAIN"))
+
+(defmethod emit-sql ((dialect sqlite3-dialect) (stmt drop-domain-statement) stream ctx)
+  (declare (ignore stmt stream ctx))
+  (error 'sql-dialect-unsupported
+         :feature :drop-domain
+         :dialect dialect
+         :message "SQLite has no DROP DOMAIN"))
+
 (defmethod initialize-instance :after ((dialect sqlite3-dialect) &key)
   (register-sqlite3-extensions dialect))
 

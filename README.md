@@ -15,6 +15,13 @@ Separate project — same pattern as `sql-protocol` / `sql-backend-*`.
 
 Registers dialect `:sqlite3` and seeds JSON1 / datetime types, ops, and helpers (`json-extract`, `strftime`, …).
 
+## Vendor SQL
+
+- `insert-or` / `replace-into` — `INSERT OR REPLACE|IGNORE|…` / `REPLACE INTO`
+- `on-conflict` — SQLite-compatible `ON CONFLICT DO NOTHING|UPDATE`
+- Postgres-only extensions (`COPY`, materialized views, partitions) signal `sql-dialect-unsupported`
+
+
 Brief: [sql.md](https://github.com/egao1980/cl-stack/blob/main/docs/capabilities/sql.md).
 
 ## License

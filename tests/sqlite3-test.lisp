@@ -72,3 +72,45 @@
     (ok (find-sql-func d :json-set))
     (%assert-contains (%sql (select (columns (sql-func :json-array-length :doc)) (from :t)) d)
                       "json_array_length(")))
+
+;;; ---- Vendor SQL gaps ----
+
+(deftest sqlite-insert-or-replace
+  (let* ((d (make-sqlite3-dialect))
+         (sql (%sql (insert-into :users (insert-or :replace)
+                                 (columns :id :name) (sql-values 1 "ada"))
+                    d)))
+    (%assert-contains sql "INSERT OR REPLACE INTO")))
+
+(deftest sqlite-replace-into
+  (let ((sql (%sql (replace-into :users (columns :id) (sql-values 1)))))
+    (%assert-contains sql "INSERT OR REPLACE INTO")))
+
+(deftest sqlite-on-conflict
+  (let* ((d (make-sqlite3-dialect))
+         (nothing (%sql (insert-into :t (columns :a) (sql-values 1)
+                                     (on-conflict :target '(:a) :action :nothing))
+                        d))
+         (upd (%sql (insert-into :t (columns :a :b) (sql-values 1 2)
+                                 (on-conflict :target '(:a)
+                                              :action :update
+                                              :set (list (:= :b 2)))
+                                 (returning :a))
+                    d)))
+    (%assert-contains nothing "ON CONFLICT" "DO NOTHING")
+    (%assert-contains upd "ON CONFLICT" "DO UPDATE SET" "RETURNING")
+    (ok (< (search "ON CONFLICT" upd) (search "RETURNING" upd)))))
+
+(deftest sqlite-rejects-pg-only-extensions
+  (ok (signals (make-sql-extension :copy-table :users)
+               'sql-dialect-unsupported))
+  (ok (signals (make-sql-extension :create-materialized-view :mv
+                                   (select (columns :id) (from :t)))
+               'sql-dialect-unsupported))
+  (ok (signals (make-sql-extension :partition-by :range :id)
+               'sql-dialect-unsupported)))
+
+(deftest sqlite-vendor-extension-registry
+  (ok (find-sql-extension :insert-or))
+  (ok (find-sql-extension :on-conflict))
+  (ok (typep (insert-or :ignore) 'insert-or-clause)))

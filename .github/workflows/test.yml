@@ -18,7 +18,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # Prefer sibling checkout until sql-query OCI carries matching registry API.
   # Point at sql-query integration branch for vendor emit hooks (PR stacks on type-ddl).
-  SQL_QUERY_REF: cursor/sql-full-gaps-3a7a
+  SQL_QUERY_REF: main
 
 jobs:
   test:

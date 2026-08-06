@@ -2,6 +2,7 @@
 
 SQLite3 **dialect backend** for [`sql-query`](https://github.com/egao1980/sql-query) (cl-stack).
 
+**Version:** `0.2.0` (requires `sql-query` ≥ 0.2.0 for insert/trigger/lock hooks).  
 Separate project — same pattern as `sql-protocol` / `sql-backend-*`.
 
 ```lisp
@@ -13,14 +14,14 @@ Separate project — same pattern as `sql-protocol` / `sql-backend-*`.
  :dialect (sql-query-sqlite3:make-sqlite3-dialect))
 ```
 
-Registers dialect `:sqlite3` and seeds JSON1 / datetime types, ops, and helpers (`json-extract`, `strftime`, …).
+Registers dialect `:sqlite3` (`?` params), JSON1 / datetime type+op seeds, and:
 
-## Vendor SQL
+| Constructor | SQL |
+|-------------|-----|
+| `insert-or` / `replace-into` | `INSERT OR REPLACE\|IGNORE\|…` / `REPLACE INTO` |
+| `on-conflict` | SQLite `ON CONFLICT DO NOTHING\|UPDATE` (+ `returning`) |
 
-- `insert-or` / `replace-into` — `INSERT OR REPLACE|IGNORE|…` / `REPLACE INTO`
-- `on-conflict` — SQLite-compatible `ON CONFLICT DO NOTHING|UPDATE`
-- Postgres-only extensions (`COPY`, materialized views, partitions) signal `sql-dialect-unsupported`
-
+Rejected on this dialect (`sql-dialect-unsupported`): CREATE/DROP/ALTER TYPE & DOMAIN, CREATE PROCEDURE / CALL, and Postgres-only extensions (COPY, matviews, partitions) when those constructors are used.
 
 Brief: [sql.md](https://github.com/egao1980/cl-stack/blob/main/docs/capabilities/sql.md).
 
